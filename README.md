@@ -16,7 +16,7 @@ This project consists of two microservices that communicate via Kafka:
 project/
 ├── calculator-module/
 ├── rest-module/
-└── docker-compose-dev.yml
+└── docker-compose.yml
 ```
 
 ## Building the Project
