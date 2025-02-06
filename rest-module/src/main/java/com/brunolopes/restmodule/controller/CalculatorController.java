@@ -3,6 +3,7 @@ package com.brunolopes.restmodule.controller;
 import com.brunolopes.restmodule.exception.CalculationTimeoutException;
 import com.brunolopes.restmodule.request.CalculationRequest;
 import com.brunolopes.restmodule.response.CalculationResponse;
+import com.brunolopes.restmodule.response.CalculationResult;
 import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -30,7 +31,7 @@ public class CalculatorController {
 
 
     @GetMapping("/sum")
-    public ResponseEntity<CalculationResponse> sum(@RequestParam("a")BigDecimal a, @RequestParam("b")BigDecimal b){
+    public ResponseEntity<CalculationResult> sum(@RequestParam("a")BigDecimal a, @RequestParam("b")BigDecimal b){
         String requestId = UUID.randomUUID().toString();
         CalculationRequest calculationRequest = new CalculationRequest(requestId, a, b, "sum");
         logger.info("Received Calculation request: {}", calculationRequest);
@@ -44,7 +45,7 @@ public class CalculatorController {
         try{
             BigDecimal result = future.get(10, TimeUnit.SECONDS);
             logger.info("Result received from calculator: {} from request: {}", result, requestId);
-            return ResponseEntity.ok(new CalculationResponse(requestId, result));
+            return ResponseEntity.ok(new CalculationResult(result));
         } catch (ExecutionException | InterruptedException | TimeoutException e) {
             logger.info("Timeout exception");
             throw new CalculationTimeoutException(requestId);
