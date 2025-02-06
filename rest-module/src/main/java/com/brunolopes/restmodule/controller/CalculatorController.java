@@ -34,23 +34,98 @@ public class CalculatorController {
     public ResponseEntity<CalculationResult> sum(@RequestParam("a")BigDecimal a, @RequestParam("b")BigDecimal b){
         String requestId = UUID.randomUUID().toString();
         CalculationRequest calculationRequest = new CalculationRequest(requestId, a, b, "sum");
-        logger.info("Received Calculation request: {}", calculationRequest);
+        logger.info("Received Calculation request <SUM>: {}", calculationRequest);
 
         CompletableFuture<BigDecimal> future = new CompletableFuture<>();
         pendingRequests.put(requestId, future);
 
         kafkaTemplate.send("calculation-requests", requestId, calculationRequest);
-        logger.info("Request sent to calculator");
+        logger.info("SUM Request sent to calculator");
 
         try{
             BigDecimal result = future.get(10, TimeUnit.SECONDS);
-            logger.info("Result received from calculator: {} from request: {}", result, requestId);
+            logger.info("SUM Result received from calculator: {} from request: {}", result, requestId);
             return ResponseEntity.ok(new CalculationResult(result));
         } catch (ExecutionException | InterruptedException | TimeoutException e) {
-            logger.info("Timeout exception");
+            logger.info("SUM Timeout exception");
             throw new CalculationTimeoutException(requestId);
         } finally {
-            logger.info("Request removed from PendingRequests");
+            logger.info("SUM Request removed from PendingRequests");
+            pendingRequests.remove(requestId);
+        }
+    }
+
+    @GetMapping("/subtract")
+    public ResponseEntity<CalculationResult> subtract(@RequestParam("a")BigDecimal a, @RequestParam("b")BigDecimal b){
+        String requestId = UUID.randomUUID().toString();
+        CalculationRequest calculationRequest = new CalculationRequest(requestId, a, b, "subtract");
+        logger.info("Received Calculation request <SUBTRACT>: {}", calculationRequest);
+
+        CompletableFuture<BigDecimal> future = new CompletableFuture<>();
+        pendingRequests.put(requestId, future);
+
+        kafkaTemplate.send("calculation-requests", requestId, calculationRequest);
+        logger.info("SUBTRACT Request sent to calculator");
+
+        try{
+            BigDecimal result = future.get(10, TimeUnit.SECONDS);
+            logger.info("SUBTRACT Result received from calculator: {} from request: {}", result, requestId);
+            return ResponseEntity.ok(new CalculationResult(result));
+        } catch (ExecutionException | InterruptedException | TimeoutException e) {
+            logger.info("SUBTRACT Timeout exception");
+            throw new CalculationTimeoutException(requestId);
+        } finally {
+            logger.info("SUBTRACT Request removed from PendingRequests");
+            pendingRequests.remove(requestId);
+        }
+    }
+
+    @GetMapping("/multiply")
+    public ResponseEntity<CalculationResult> multiply(@RequestParam("a")BigDecimal a, @RequestParam("b")BigDecimal b){
+        String requestId = UUID.randomUUID().toString();
+        CalculationRequest calculationRequest = new CalculationRequest(requestId, a, b, "multiply");
+        logger.info("Received Calculation request <MULTIPLY>: {}", calculationRequest);
+
+        CompletableFuture<BigDecimal> future = new CompletableFuture<>();
+        pendingRequests.put(requestId, future);
+
+        kafkaTemplate.send("calculation-requests", requestId, calculationRequest);
+        logger.info("MULTIPLY Request sent to calculator");
+
+        try{
+            BigDecimal result = future.get(10, TimeUnit.SECONDS);
+            logger.info("MULTIPLY Result received from calculator: {} from request: {}", result, requestId);
+            return ResponseEntity.ok(new CalculationResult(result));
+        } catch (ExecutionException | InterruptedException | TimeoutException e) {
+            logger.info("MULTIPLY Timeout exception");
+            throw new CalculationTimeoutException(requestId);
+        } finally {
+            logger.info("MULTIPLY Request removed from PendingRequests");
+            pendingRequests.remove(requestId);
+        }
+    }
+
+    @GetMapping("/divide")
+    public ResponseEntity<?> divide(@RequestParam("a")BigDecimal a, @RequestParam("b")BigDecimal b){
+        String requestId = UUID.randomUUID().toString();
+        CalculationRequest calculationRequest = new CalculationRequest(requestId, a, b, "divide");
+        logger.info("Received Calculation request <DIVIDE>: {}", calculationRequest);
+
+        CompletableFuture<BigDecimal> future = new CompletableFuture<>();
+        pendingRequests.put(requestId, future);
+
+        kafkaTemplate.send("calculation-requests", requestId, calculationRequest);
+        logger.info("DIVIDE Request sent to calculator");
+
+        try{
+            BigDecimal result = future.get(10, TimeUnit.SECONDS);
+            logger.info("DIVIDE Result received from calculator: {} from request: {}", result, requestId);
+            return ResponseEntity.ok(new CalculationResult(result));
+        } catch (ExecutionException | InterruptedException | TimeoutException e) {
+            logger.info("DIVIDE Timeout exception");
+            throw new CalculationTimeoutException(requestId);
+        } finally {
+            logger.info("DIVIDE Request removed from PendingRequests");
             pendingRequests.remove(requestId);
         }
     }
