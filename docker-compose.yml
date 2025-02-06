@@ -48,7 +48,6 @@ services:
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
     depends_on:
       - kafka
-      - rest-module
 
 networks:
   broker-kafka:
